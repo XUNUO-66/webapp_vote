@@ -1,2 +1,37 @@
 # webapp_vote
-A simple and fun voting program that helps solve the problem of indecision when traveling with a group. It features customizable options, support for multiple selections, random voting for users, and other functions.
+
+一个简单有趣的小型网页投票程序，帮助你和小伙伴出行聚会时快速决定去哪里、玩什么，解决“选择困难症”！
+
+## 功能简介
+
+- 支持自定义投票选项
+- 可选择单选/多选
+- 支持为用户随机分配投票
+- 页面简洁，操作方便
+- 支持移动端/桌面浏览器
+
+## 使用方法
+
+1. 克隆仓库到本地  
+   ```bash
+   git clone https://github.com/XUNUO-66/webapp_vote.git
+   ```
+
+2. 进入项目目录，打开 `index.html` 即可在本地浏览器访问，无需额外环境依赖。
+
+3. 或者直接部署到自己的服务器/静态空间即可使用。
+
+## 示例截图
+
+> （如有页面截图，可插入此处，示例：）
+> ![screenshot](./screenshot.png)
+
+## 参与贡献
+
+欢迎 issue、提交 PR 一起完善项目。
+
+## License
+
+MIT License
+
+本次提交仅涉及 README 格式优化，无代码改动。
