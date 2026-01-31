@@ -23,8 +23,7 @@
 
 ## 示例截图
 
-> （如有页面截图，可插入此处，示例：）
-> ![screenshot](./screenshot.png)
+<img src="./screenshot.png" alt="screenshot" width="400" />
 
 ## 参与贡献
 
