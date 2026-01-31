@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投票助手</title>
+    <!-- Favicon: Using an emoji as an icon (no external file needed) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+
+        /* Theme Definitons using CSS Variables */
+        :root {
+            /* Default: Pink/Macaron */
+            --bg-color: #FFF8F0;
+            --container-bg: #FFFFFF;
+            --primary-gradient: linear-gradient(135deg, #FF9AA2 0%, #FFB7B2 100%);
+            --primary-color: #FF9AA2;
+            --primary-shadow: rgba(255, 154, 162, 0.3);
+            --text-main: #5D5555;
+            --text-secondary: #887B7B;
+            --input-border: #EEE0E5;
+            --input-focus: #FFB7B2;
+            --form-bg: #FFFCF9;
+            --form-border: #FFE5E5;
+            --btn-outline-text: #9AA2FF;
+            --btn-outline-border: #C7CEEA;
+            --random-btn-bg: #B5EAEA;
+            --random-btn-shadow: rgba(181, 234, 234, 0.4);
+            --option-hover-border: #E2F0CB;
+            --option-selected-bg: #E2F0CB;
+            --option-selected-border: #B8D8B8;
+            --option-selected-text: #556B55;
+            --delete-btn: #FFDAC1;
+            --delete-btn-hover: #FF9AA2;
+            --shadow-color: rgba(220, 200, 200, 0.3);
+        }
+
+        [data-theme="blue"] {
+            /* Blue/Boy Theme */
+            --bg-color: #F0F8FF;
+            --container-bg: #FFFFFF;
+            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --primary-color: #29B6F6;
+            --primary-shadow: rgba(79, 172, 254, 0.3);
+            --text-main: #455A64;
+            --text-secondary: #546E7A;
+            --input-border: #B3E5FC;
+            --input-focus: #29B6F6;
+            --form-bg: #FAFDFF;
+            --form-border: #E1F5FE;
+            --btn-outline-text: #5C6BC0;
+            --btn-outline-border: #9FA8DA;
+            --random-btn-bg: #26C6DA;
+            --random-btn-shadow: rgba(38, 198, 218, 0.4);
+            --option-hover-border: #B3E5FC;
+            --option-selected-bg: #E1F5FE;
+            --option-selected-border: #81D4FA;
+            --option-selected-text: #0277BD;
+            --delete-btn: #B0BEC5;
+            --delete-btn-hover: #EF5350;
+            --shadow-color: rgba(176, 196, 222, 0.4);
+        }
+
+        [data-theme="green"] {
+            /* Green/Fresh Theme */
+            --bg-color: #F1F8E9;
+            --container-bg: #FFFFFF;
+            --primary-gradient: linear-gradient(135deg, #66BB6A 0%, #A5D6A7 100%);
+            --primary-color: #66BB6A;
+            --primary-shadow: rgba(102, 187, 106, 0.3);
+            --text-main: #33691E;
+            --text-secondary: #558B2F;
+            --input-border: #C8E6C9;
+            --input-focus: #66BB6A;
+            --form-bg: #F9FBE7;
+            --form-border: #DCEDC8;
+            --btn-outline-text: #2E7D32;
+            --btn-outline-border: #A5D6A7;
+            --random-btn-bg: #FFCC80; /* Orange accent */
+            --random-btn-shadow: rgba(255, 204, 128, 0.4);
+            --option-hover-border: #81C784;
+            --option-selected-bg: #DCEDC8;
+            --option-selected-border: #AED581;
+            --option-selected-text: #33691E;
+            --delete-btn: #FFAB91;
+            --delete-btn-hover: #D84315;
+            --shadow-color: rgba(165, 214, 167, 0.3);
+        }
+        
+        body {
+            font-family: 'Quicksand', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            transition: background-color 0.5s;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--container-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px var(--shadow-color);
+            transition: box-shadow 0.5s;
+        }
+
+        /* Mobile specific adjustments */
+        @media (min-width: 481px) {
+            .container {
+                min-height: auto;
+                margin: 20px;
+                border-radius: 24px;
+                overflow: hidden;
+                height: 90vh;
+            }
+        }
+
+        .header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 24px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            box-shadow: 0 4px 10px var(--primary-shadow);
+            position: relative;
+            z-index: 10;
+            transition: all 0.5s;
+        }
+
+        .content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            flex: 1;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            background: var(--form-bg);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--form-border);
+            transition: all 0.5s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF;
+            color: var(--text-main);
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5); /* simplified focus shadow */
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            margin-top: auto;
+            box-shadow: 0 8px 15px var(--primary-shadow);
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--btn-outline-text);
+            border: 2px solid var(--btn-outline-border);
+            box-shadow: none;
+            margin-top: 16px;
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--btn-outline-text);
+            background-color: rgba(255,255,255,0.5);
+        }
+
+        .btn-random {
+            background-color: var(--random-btn-bg);
+            color: var(--text-main);
+            box-shadow: 0 8px 15px var(--random-btn-shadow);
+        }
+        
+        .btn-random:hover {
+            opacity: 0.9;
+        }
+
+        .img-btn-add {
+            border: 2px dashed var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            background-color: transparent !important;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: none !important;
+        }
+        
+        .img-btn-add:hover {
+            background-color: rgba(255,255,255,0.5) !important;
+        }
+
+        .input-row {
+            display: flex;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            margin-bottom: 8px;
+        }
+        
+        .option-item input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid var(--input-border);
+            border-radius: 0;
+            padding: 8px 0;
+            font-weight: 600;
+        }
+        
+        .option-item input:focus {
+            border-color: var(--input-focus);
+            box-shadow: none;
+        }
+
+        .delete-btn {
+            color: var(--delete-btn);
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        .delete-btn:hover {
+            color: var(--delete-btn-hover);
+        }
+
+        /* Voting List */
+        .vote-option {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            border: 2px solid #F0F0F0;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #FAFAFA;
+        }
+        
+        .vote-option:hover {
+            border-color: var(--option-hover-border);
+            background: #FDFDF8;
+        }
+        
+        .vote-option.selected {
+            background-color: var(--option-selected-bg);
+            border-color: var(--option-selected-border);
+            color: var(--option-selected-text);
+        }
+
+        .vote-option input {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+        
+        /* Transition */
+        .huge-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Results */
+        .result-item {
+            background-color: #FFF;
+            border: none;
+            padding: 20px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            align-items: center;
+        }
+
+        .result-count {
+            font-weight: 800;
+            color: #FFFFFF;
+            background: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: background 0.5s;
+        }
+
+        h2 {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        
+        p {
+            color: var(--text-secondary);
+        }
+
+        small {
+            color: #AAA;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .theme-selector {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+            margin: 0;
+            z-index: 20;
+        }
+        
+        .theme-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .theme-btn.active {
+            border-color: #FFFFFF;
+            transform: scale(1.1);
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="theme-selector">
+            <button class="theme-btn active" style="background-color: #FF9AA2;" onclick="switchTheme('pink')" title="女生粉"></button>
+            <button class="theme-btn" style="background-color: #29B6F6;" onclick="switchTheme('blue')" title="男生蓝"></button>
+            <button class="theme-btn" style="background-color: #66BB6A;" onclick="switchTheme('green')" title="清新绿"></button>
+        </div>
+        投票 APP
+    </div>
+    
+    <div class="content">
+        
+        <!-- 1. SETUP SCREEN -->
+        <div id="setup-screen" class="screen active">
+
+            <div class="form-group">
+                <label>投票人数</label>
+                <input type="number" id="voter-count" value="3" min="1">
+            </div>
+
+            <div class="form-group">
+                <label>投票模式</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="multi-select" style="width: 20px; height: 20px;">
+                    <span>允许每人选多项 (多选)</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>选项列表 (可直接修改):</label>
+                <div id="options-list-container">
+                    <!-- Options inserted here by JS -->
+                </div>
+                <!-- Plus Button -->
+                <button class="btn img-btn-add" onclick="addNewOptionEntry()" style="background-color: transparent; border: 2px dashed #6200ea; color: #6200ea; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 24px; margin-right: 5px; line-height: 1;">+</span> 添加选项
+                </button>
+            </div>
+
+            <button class="btn" onclick="startVoting()">开始投票</button>
+            <button class="btn btn-outline" onclick="resetSetupForm()">清空选项</button>
+        </div>
+
+        <!-- 2. VOTING SCREEN -->
+        <div id="voting-screen" class="screen">
+            <h2 style="text-align: center; margin-bottom: 5px;">第 <span id="current-voter-num">1</span> 位投票者</h2>
+            <p style="text-align: center; color: #666; margin-top: 0;">共 <span id="total-voters-disp"></span> 人</p>
+            
+            <div id="ballot-box" style="margin-top: 20px;">
+                <!-- Vote options inserted here by JS -->
+            </div>
+
+            <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px;">
+                <button class="btn btn-random" onclick="voteRandom()">🎲 帮我随机选一个并提交</button>
+                <br>
+                <button class="btn" onclick="submitVote()" style="margin-top: 15px;">确认投票</button>
+            </div>
+        </div>
+
+        <!-- 3. TRANSITION SCREEN (PRIVACY) -->
+        <div id="transition-screen" class="screen">
+            <div class="transition-box">
+                <div class="huge-icon">🔒</div>
+                <h2>投票已提交</h2>
+                <p>请将设备交给下一位投票者</p>
+                <p style="color: #6200ea; font-size: 24px; font-weight: bold;">第 <span id="next-voter-num">2</span> 位</p>
+                
+                <button class="btn" onclick="nextVoterReady()" style="margin-top: 40px;">我是下一位，开始投票</button>
+            </div>
+        </div>
+
+        <!-- 4. RESULTS SCREEN -->
+        <div id="results-screen" class="screen">
+            <h2>投票结果</h2>
+            <p>总票数: <span id="total-votes-count">0</span></p>
+            
+            <div id="results-list">
+                <!-- Results inserted here -->
+            </div>
+
+            <button class="btn btn-outline" onclick="restartApp()">重新开始</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // --- State ---
+    let appState = {
+        totalVoters: 0,
+        currentVoter: 1,
+        options: ["选项 A", "选项 B"], // Initial default
+        isMultiSelect: false,
+        votes: {} // Map option -> count
+    };
+
+    function switchTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // Update active class on buttons
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(theme === 'pink' && btn.style.backgroundColor.includes('255, 154, 162')) btn.classList.add('active'); // FF9AA2 is 255, 154, 162
+             // Simple hackish check, better to have ID or data attr, but color check works for now
+            if (theme === 'pink' && btn.onclick.toString().includes('pink')) btn.classList.add('active');
+            if (theme === 'blue' && btn.onclick.toString().includes('blue')) btn.classList.add('active');
+            if (theme === 'green' && btn.onclick.toString().includes('green')) btn.classList.add('active');
+        });
+    }
+
+    // --- Setup Helper Functions ---
+    
+    function renderOptionsList() {
+        const container = document.getElementById('options-list-container');
+        container.innerHTML = '';
+        appState.options.forEach((opt, index) => {
+            const div = document.createElement('div');
+            div.className = 'option-item';
+            div.innerHTML = `
+                <span style="margin-right: 8px; font-weight: bold; color: #666;">${index + 1}.</span>
+                <input type="text" 
+                       value="${opt}" 
+                       oninput="updateOption(${index}, this.value)"
+                       style="flex: 1; margin: 0; padding: 8px;"
+                       placeholder="请输入选项名称">
+                <button class="delete-btn" onclick="removeOption(${index})">×</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateOption(index, value) {
+        appState.options[index] = value;
+    }
+
+    function addNewOptionEntry() {
+        // Find a unique name like "选项 C", "选项 D"...
+        let nextCharCode = 65 + appState.options.length; // 65 is 'A'
+        let newName = "";
+        
+        // Simple heuristic: if we have A and B, try C. If C exists, just use empty.
+        // Actually, let's just make it empty or a placeholder to encourage typing.
+        // User requested: "add option box... plus sign". 
+        // Let's add an empty one or "选项 X" so they see it.
+        
+        newName = "选项 " + String.fromCharCode(nextCharCode);
+        // If it's way past Z, just "选项 N"
+        if (nextCharCode > 90) newName = "新选项";
+
+        appState.options.push(newName);
+        renderOptionsList();
+    }
+
+    function removeOption(index) {
+        if (appState.options.length <= 2) {
+            alert('至少需要保留两个选项');
+            return;
+        }
+        appState.options.splice(index, 1);
+        renderOptionsList();
+    }
+
+    function resetSetupForm() {
+        if (!confirm('确定要清空当前设置吗？这将恢复默认状态。')) return;
+        
+        // Reset inputs
+        document.getElementById('voter-count').value = "3";
+        document.getElementById('multi-select').checked = false;
+        
+        // Reset options to default
+        appState.options = ["选项 A", "选项 B"];
+        renderOptionsList();
+    }
+
+    // --- State Transitions ---
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function startVoting() {
+        // Validate options
+        // 1. Trim whitespaces
+        appState.options = appState.options.map(o => o.trim());
+        
+        // 2. Check empty
+        if (appState.options.some(o => o === "")) {
+            alert('存在空白的选项名称，请修改或删除');
+            return;
+        }
+
+        if (appState.options.length < 2) {
+            alert('至少添加两个选项');
+            return;
+        }
+        
+        // 3. Check duplicates
+        const uniqueSet = new Set(appState.options);
+        if (uniqueSet.size !== appState.options.length) {
+            alert('选项名称不能重复，请修改重复的选项名称');
+            return;
+        }
+
+        // Validate Voter Count
+        const countInput = document.getElementById('voter-count');
+        const count = parseInt(countInput.value);
+        
+        if (!count || count < 1) {
+            alert('请输入有效的投票人数');
+            return;
+        }
+        if (appState.options.length < 2) {
+            alert('至少添加两个选项');
+            return;
+        }
+
+        // Initialize State
+        appState.totalVoters = count;
+        appState.currentVoter = 1;
+        appState.isMultiSelect = document.getElementById('multi-select').checked;
+        appState.votes = {};
+        appState.options.forEach(opt => appState.votes[opt] = 0);
+
+        loadVotingScreen();
+    }
+
+    function loadVotingScreen() {
+        showScreen('voting-screen');
+        document.getElementById('current-voter-num').textContent = appState.currentVoter;
+        document.getElementById('total-voters-disp').textContent = appState.totalVoters;
+
+        const container = document.getElementById('ballot-box');
+        container.innerHTML = '';
+
+        appState.options.forEach(opt => {
+            const type = appState.isMultiSelect ? 'checkbox' : 'radio';
+            const name = appState.isMultiSelect ? 'vote-opt' : 'vote-opt-radio';
+            
+            const label = document.createElement('label');
+            label.className = 'vote-option';
+            label.innerHTML = `
+                <input type="${type}" name="${name}" value="${opt}">
+                <span class="opt-text">${opt}</span>
+            `;
+            
+            // Interaction: select row checks input
+            label.onclick = (e) => {
+                // Prevent double trigger if clicking directly on input
+                if(e.target.tagName !== 'INPUT') {
+                   const input = label.querySelector('input');
+                   if (type === 'radio') {
+                       input.checked = true;
+                   } else {
+                       input.checked = !input.checked;
+                   }
+                   updateSelectionUI();
+                } else {
+                    updateSelectionUI();
+                }
+            };
+            
+            container.appendChild(label);
+        });
+    }
+
+    function updateSelectionUI() {
+        // Just visual styling
+        document.querySelectorAll('.vote-option').forEach(el => {
+            const input = el.querySelector('input');
+            if (input.checked) el.classList.add('selected');
+            else el.classList.remove('selected');
+        });
+    }
+
+    function voteRandom() {
+        if (!confirm('确定要随机投票并直接提交吗？')) return;
+
+        // Pick one random option
+        const randomIndex = Math.floor(Math.random() * appState.options.length);
+        const randomOption = appState.options[randomIndex];
+        
+        // Record vote
+        appState.votes[randomOption]++;
+        
+        finishVoterTurn();
+    }
+
+    function submitVote() {
+        const inputs = document.querySelectorAll('#ballot-box input');
+        let selected = [];
+        inputs.forEach(input => {
+            if (input.checked) selected.push(input.value);
+        });
+
+        if (selected.length === 0) {
+            alert('请至少选择一项，或者点击随机投票');
+            return;
+        }
+
+        // Record votes
+        selected.forEach(opt => {
+            appState.votes[opt]++;
+        });
+
+        finishVoterTurn();
+    }
+
+    function finishVoterTurn() {
+        if (appState.currentVoter < appState.totalVoters) {
+            // Prepare next pass
+            appState.currentVoter++;
+            document.getElementById('next-voter-num').textContent = appState.currentVoter;
+            showScreen('transition-screen');
+        } else {
+            // All done
+            showResults();
+        }
+    }
+
+    function nextVoterReady() {
+        loadVotingScreen();
+    }
+
+    function showResults() {
+        showScreen('results-screen');
+        const list = document.getElementById('results-list');
+        list.innerHTML = '';
+        
+        let totalVotes = 0;
+        
+        // Sort results: most votes first
+        const sorted = Object.entries(appState.votes).sort((a,b) => b[1] - a[1]);
+
+        sorted.forEach(([opt, count]) => {
+            totalVotes += count;
+            const div = document.createElement('div');
+            div.className = 'result-item';
+            div.innerHTML = `
+                <span>${opt}</span>
+                <span class="result-count">${count} 票</span>
+            `;
+            list.appendChild(div);
+        });
+
+        document.getElementById('total-votes-count').textContent = totalVotes;
+    }
+
+    function restartApp() {
+        if(confirm('确定要清空数据并重新开始吗？')) {
+            appState.currentVoter = 1;
+            appState.votes = {};
+            showScreen('setup-screen');
+        }
+    }
+
+    // Init
+    renderOptionsList();
+
+</script>
+
+</body>
+</html>
