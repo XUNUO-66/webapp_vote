@@ -29,9 +29,3 @@
 ## 参与贡献
 
 欢迎 issue、提交 PR 一起完善项目。
-
-## License
-
-MIT License
-
-本次提交仅涉及 README 格式优化，无代码改动。
