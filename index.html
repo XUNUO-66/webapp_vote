@@ -10,9 +10,10 @@
 
         /* ============ Theme Tokens (accent pair per theme) ============ */
         :root {
-            --accent-1: #ff6b9d;
-            --accent-2: #c084fc;
-            --accent-glow: rgba(255, 107, 157, 0.45);
+            /* 默认：极光蓝 */
+            --accent-1: #38bdf8;
+            --accent-2: #818cf8;
+            --accent-glow: rgba(56, 189, 248, 0.45);
             --bg-deep: #0a0c16;
             --glass: rgba(255, 255, 255, 0.06);
             --glass-strong: rgba(255, 255, 255, 0.10);
@@ -22,10 +23,10 @@
             --text-faint: rgba(242, 243, 247, 0.38);
         }
 
-        [data-theme="blue"] {
-            --accent-1: #38bdf8;
-            --accent-2: #818cf8;
-            --accent-glow: rgba(56, 189, 248, 0.45);
+        [data-theme="pink"] {
+            --accent-1: #ff6b9d;
+            --accent-2: #c084fc;
+            --accent-glow: rgba(255, 107, 157, 0.45);
         }
 
         [data-theme="green"] {
@@ -844,8 +845,8 @@
 <div class="container">
     <div class="header">
         <div class="theme-selector">
-            <button class="theme-btn active" style="background: linear-gradient(135deg,#ff6b9d,#c084fc); color:#ff6b9d;" onclick="switchTheme('pink', this)" title="星云粉"></button>
-            <button class="theme-btn" style="background: linear-gradient(135deg,#38bdf8,#818cf8); color:#38bdf8;" onclick="switchTheme('blue', this)" title="极光蓝"></button>
+            <button class="theme-btn" style="background: linear-gradient(135deg,#ff6b9d,#c084fc); color:#ff6b9d;" onclick="switchTheme('pink', this)" title="星云粉"></button>
+            <button class="theme-btn active" style="background: linear-gradient(135deg,#38bdf8,#818cf8); color:#38bdf8;" onclick="switchTheme('blue', this)" title="极光蓝"></button>
             <button class="theme-btn" style="background: linear-gradient(135deg,#34d399,#a3e635); color:#34d399;" onclick="switchTheme('green', this)" title="萤火绿"></button>
         </div>
         <span class="planet">🪐</span>投票星球
