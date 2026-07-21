@@ -3,136 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>投票助手</title>
-    <!-- Favicon: Using an emoji as an icon (no external file needed) -->
+    <title>投票星球 · Vote Planet</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap');
 
-        /* Theme Definitons using CSS Variables */
+        /* ============ Theme Tokens (accent pair per theme) ============ */
         :root {
-            /* Default: Pink/Macaron */
-            --bg-color: #FFF8F0;
-            --container-bg: #FFFFFF;
-            --primary-gradient: linear-gradient(135deg, #FF9AA2 0%, #FFB7B2 100%);
-            --primary-color: #FF9AA2;
-            --primary-shadow: rgba(255, 154, 162, 0.3);
-            --text-main: #5D5555;
-            --text-secondary: #887B7B;
-            --input-border: #EEE0E5;
-            --input-focus: #FFB7B2;
-            --form-bg: #FFFCF9;
-            --form-border: #FFE5E5;
-            --btn-outline-text: #9AA2FF;
-            --btn-outline-border: #C7CEEA;
-            --random-btn-bg: #B5EAEA;
-            --random-btn-shadow: rgba(181, 234, 234, 0.4);
-            --option-hover-border: #E2F0CB;
-            --option-selected-bg: #E2F0CB;
-            --option-selected-border: #B8D8B8;
-            --option-selected-text: #556B55;
-            --delete-btn: #FFDAC1;
-            --delete-btn-hover: #FF9AA2;
-            --shadow-color: rgba(220, 200, 200, 0.3);
+            --accent-1: #ff6b9d;
+            --accent-2: #c084fc;
+            --accent-glow: rgba(255, 107, 157, 0.45);
+            --bg-deep: #0a0c16;
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-strong: rgba(255, 255, 255, 0.10);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-main: #f2f3f7;
+            --text-secondary: rgba(242, 243, 247, 0.62);
+            --text-faint: rgba(242, 243, 247, 0.38);
         }
 
         [data-theme="blue"] {
-            /* Blue/Boy Theme */
-            --bg-color: #F0F8FF;
-            --container-bg: #FFFFFF;
-            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --primary-color: #29B6F6;
-            --primary-shadow: rgba(79, 172, 254, 0.3);
-            --text-main: #455A64;
-            --text-secondary: #546E7A;
-            --input-border: #B3E5FC;
-            --input-focus: #29B6F6;
-            --form-bg: #FAFDFF;
-            --form-border: #E1F5FE;
-            --btn-outline-text: #5C6BC0;
-            --btn-outline-border: #9FA8DA;
-            --random-btn-bg: #26C6DA;
-            --random-btn-shadow: rgba(38, 198, 218, 0.4);
-            --option-hover-border: #B3E5FC;
-            --option-selected-bg: #E1F5FE;
-            --option-selected-border: #81D4FA;
-            --option-selected-text: #0277BD;
-            --delete-btn: #B0BEC5;
-            --delete-btn-hover: #EF5350;
-            --shadow-color: rgba(176, 196, 222, 0.4);
+            --accent-1: #38bdf8;
+            --accent-2: #818cf8;
+            --accent-glow: rgba(56, 189, 248, 0.45);
         }
 
         [data-theme="green"] {
-            /* Green/Fresh Theme */
-            --bg-color: #F1F8E9;
-            --container-bg: #FFFFFF;
-            --primary-gradient: linear-gradient(135deg, #66BB6A 0%, #A5D6A7 100%);
-            --primary-color: #66BB6A;
-            --primary-shadow: rgba(102, 187, 106, 0.3);
-            --text-main: #33691E;
-            --text-secondary: #558B2F;
-            --input-border: #C8E6C9;
-            --input-focus: #66BB6A;
-            --form-bg: #F9FBE7;
-            --form-border: #DCEDC8;
-            --btn-outline-text: #2E7D32;
-            --btn-outline-border: #A5D6A7;
-            --random-btn-bg: #FFCC80; /* Orange accent */
-            --random-btn-shadow: rgba(255, 204, 128, 0.4);
-            --option-hover-border: #81C784;
-            --option-selected-bg: #DCEDC8;
-            --option-selected-border: #AED581;
-            --option-selected-text: #33691E;
-            --delete-btn: #FFAB91;
-            --delete-btn-hover: #D84315;
-            --shadow-color: rgba(165, 214, 167, 0.3);
+            --accent-1: #34d399;
+            --accent-2: #a3e635;
+            --accent-glow: rgba(52, 211, 153, 0.45);
         }
-        
+
+        * { -webkit-tap-highlight-color: transparent; }
+
         body {
-            font-family: 'Quicksand', -apple-system, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Quicksand', 'ZCOOL KuaiLe', -apple-system, sans-serif;
+            background: var(--bg-deep);
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             min-height: 100vh;
             color: var(--text-main);
-            transition: background-color 0.5s;
+            overflow-x: hidden;
         }
 
+        /* ============ Aurora Background ============ */
+        .aurora {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .aurora .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.55;
+            transition: background 0.8s;
+        }
+
+        .aurora .blob:nth-child(1) {
+            width: 55vmax; height: 55vmax;
+            top: -20vmax; left: -15vmax;
+            background: var(--accent-1);
+            animation: drift1 22s ease-in-out infinite alternate;
+        }
+
+        .aurora .blob:nth-child(2) {
+            width: 45vmax; height: 45vmax;
+            bottom: -18vmax; right: -12vmax;
+            background: var(--accent-2);
+            animation: drift2 26s ease-in-out infinite alternate;
+        }
+
+        .aurora .blob:nth-child(3) {
+            width: 30vmax; height: 30vmax;
+            top: 40%; left: 55%;
+            background: var(--accent-1);
+            opacity: 0.3;
+            animation: drift3 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes drift1 {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(8vmax, 6vmax) scale(1.15); }
+        }
+        @keyframes drift2 {
+            from { transform: translate(0, 0) scale(1.1); }
+            to   { transform: translate(-7vmax, -8vmax) scale(0.95); }
+        }
+        @keyframes drift3 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to   { transform: translate(-10vmax, 5vmax) rotate(40deg); }
+        }
+
+        /* Twinkling stars */
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.15; transform: scale(0.8); }
+            50%      { opacity: 0.9;  transform: scale(1.2); }
+        }
+
+        /* ============ Layout ============ */
         .container {
             width: 100%;
             max-width: 480px;
-            background-color: var(--container-bg);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px var(--shadow-color);
-            transition: box-shadow 0.5s;
+            position: relative;
+            z-index: 1;
+            background: rgba(13, 15, 26, 0.55);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
         }
 
-        /* Mobile specific adjustments */
         @media (min-width: 481px) {
             .container {
                 min-height: auto;
-                margin: 20px;
-                border-radius: 24px;
+                margin: 24px;
+                border-radius: 28px;
                 overflow: hidden;
-                height: 90vh;
+                height: 92vh;
+                border: 1px solid var(--glass-border);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px var(--accent-glow);
             }
         }
 
+        /* ============ Header ============ */
         .header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 24px;
+            padding: 22px 24px;
             text-align: center;
-            font-size: 22px;
-            font-weight: 700;
-            box-shadow: 0 4px 10px var(--primary-shadow);
+            font-family: 'ZCOOL KuaiLe', 'Quicksand', sans-serif;
+            font-size: 24px;
+            letter-spacing: 2px;
             position: relative;
             z-index: 10;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.5s;
+        }
+
+        .header .planet {
+            font-size: 26px;
+            margin-right: 10px;
+            -webkit-text-fill-color: initial;
+            animation: planetFloat 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes planetFloat {
+            0%, 100% { transform: translateY(0) rotate(-8deg); }
+            50%      { transform: translateY(-5px) rotate(8deg); }
+        }
+
+        .theme-selector {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .theme-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            transition: all 0.25s;
+            padding: 0;
+        }
+
+        .theme-btn:hover { transform: scale(1.25); }
+
+        .theme-btn.active {
+            border-color: #fff;
+            transform: scale(1.25);
+            box-shadow: 0 0 12px currentColor;
         }
 
         .content {
@@ -143,439 +215,875 @@
             overflow-y: auto;
         }
 
+        /* ============ Screens ============ */
         .screen {
             display: none;
             flex-direction: column;
             height: 100%;
             flex: 1;
-            animation: fadeIn 0.4s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .screen.active {
             display: flex;
+            animation: screenIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .form-group {
-            margin-bottom: 24px;
-            background: var(--form-bg);
-            padding: 16px;
-            border-radius: 16px;
-            border: 1px solid var(--form-border);
-            transition: all 0.5s;
+        @keyframes screenIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
+
+        /* ============ Typography ============ */
+        h2 {
+            font-family: 'ZCOOL KuaiLe', 'Quicksand', sans-serif;
+            color: var(--text-main);
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        p { color: var(--text-secondary); }
+
+        small { color: var(--text-faint); display: block; margin-top: 6px; }
+
+        /* ============ Mode Cards (Start Screen) ============ */
+        .mode-card {
+            position: relative;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            border-radius: 22px;
+            padding: 26px 22px;
+            cursor: pointer;
+            text-align: left;
+            color: var(--text-main);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .mode-card:hover, .mode-card:active {
+            transform: translateY(-4px) scale(1.02);
+            border-color: transparent;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--accent-glow);
+        }
+
+        .mode-card:hover::before, .mode-card:active::before { opacity: 0.9; }
+
+        .mode-card > * { position: relative; z-index: 1; }
+
+        .mode-card .mode-emoji {
+            font-size: 44px;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+            transition: transform 0.3s;
+        }
+
+        .mode-card:hover .mode-emoji { transform: scale(1.15) rotate(-8deg); }
+
+        .mode-card .mode-title {
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            font-size: 21px;
+            letter-spacing: 1px;
+        }
+
+        .mode-card .mode-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            transition: color 0.3s;
+        }
+
+        .mode-card:hover .mode-desc { color: rgba(255,255,255,0.85); }
+
+        .hero-emoji {
+            text-align: center;
+            font-size: 74px;
+            margin: 10px 0 4px;
+            animation: heroBob 3.5s ease-in-out infinite;
+            filter: drop-shadow(0 10px 24px var(--accent-glow));
+        }
+
+        @keyframes heroBob {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-12px); }
+        }
+
+        /* ============ Form ============ */
+        .form-group {
+            margin-bottom: 20px;
+            background: var(--glass);
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid var(--glass-border);
+            transition: border-color 0.3s;
+        }
+
+        .form-group:focus-within { border-color: var(--accent-1); }
 
         label {
             display: block;
             margin-bottom: 10px;
             font-weight: 700;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 14px;
-            border: 2px solid var(--input-border);
-            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
             box-sizing: border-box;
             font-size: 16px;
             font-family: 'Quicksand', sans-serif;
-            background-color: #FFF;
+            background: rgba(0, 0, 0, 0.25);
             color: var(--text-main);
             transition: all 0.3s;
         }
-        
+
         input:focus {
             outline: none;
-            border-color: var(--input-focus);
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5); /* simplified focus shadow */
+            border-color: var(--accent-1);
+            box-shadow: 0 0 0 4px var(--accent-glow);
         }
 
+        /* Stepper for number inputs */
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stepper button {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-strong);
+            color: var(--text-main);
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .stepper button:hover { background: var(--accent-1); border-color: transparent; }
+        .stepper button:active { transform: scale(0.9); }
+
+        .stepper input { text-align: center; font-weight: 700; font-size: 20px; }
+
+        /* Toggle switch */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .toggle {
+            position: relative;
+            width: 52px;
+            height: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .toggle.on { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); }
+        .toggle.on::after { transform: translateX(22px); }
+
+        /* ============ Buttons ============ */
         .btn {
-            background-color: var(--primary-color);
+            position: relative;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             color: white;
             border: none;
-            padding: 16px;
+            padding: 17px;
             border-radius: 50px;
-            font-size: 18px;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 700;
+            font-size: 17px;
+            font-family: 'ZCOOL KuaiLe', 'Quicksand', sans-serif;
+            letter-spacing: 2px;
             width: 100%;
             cursor: pointer;
             margin-top: auto;
-            box-shadow: 0 8px 15px var(--primary-shadow);
-            transition: all 0.3s;
+            box-shadow: 0 10px 28px var(--accent-glow);
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        .btn:active {
-            transform: translateY(1px);
-        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 16px 36px var(--accent-glow); }
+        .btn:active { transform: translateY(1px) scale(0.98); }
 
         .btn-outline {
-            background-color: transparent;
-            color: var(--btn-outline-text);
-            border: 2px solid var(--btn-outline-border);
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
             box-shadow: none;
-            margin-top: 16px;
+            margin-top: 14px;
+            font-family: 'Quicksand', sans-serif;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
-        
+
         .btn-outline:hover {
-            border-color: var(--btn-outline-text);
-            background-color: rgba(255,255,255,0.5);
+            border-color: var(--accent-1);
+            color: var(--text-main);
+            box-shadow: none;
         }
 
         .btn-random {
-            background-color: var(--random-btn-bg);
-            color: var(--text-main);
-            box-shadow: 0 8px 15px var(--random-btn-shadow);
+            background: var(--glass-strong);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+            backdrop-filter: blur(8px);
         }
-        
-        .btn-random:hover {
-            opacity: 0.9;
+
+        .btn-random:hover { border-color: var(--accent-2); box-shadow: 0 10px 28px var(--accent-glow); }
+
+        .btn-back {
+            width: auto;
+            align-self: flex-start;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
         }
 
         .img-btn-add {
-            border: 2px dashed var(--primary-color) !important;
-            color: var(--primary-color) !important;
-            background-color: transparent !important;
-            border-radius: 12px;
-            padding: 12px;
+            border: 2px dashed var(--accent-1) !important;
+            color: var(--accent-1) !important;
+            background: transparent !important;
+            border-radius: 14px;
+            padding: 13px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: none !important;
-        }
-        
-        .img-btn-add:hover {
-            background-color: rgba(255,255,255,0.5) !important;
-        }
-
-        .input-row {
+            margin-top: 4px;
+            width: 100%;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .img-btn-add:hover { background: var(--glass) !important; }
+
+        /* ============ Option Editor ============ */
         .option-item {
             display: flex;
             align-items: center;
-            padding: 8px 0;
-            margin-bottom: 8px;
-        }
-        
-        .option-item input {
-            background-color: transparent;
-            border: none;
-            border-bottom: 2px solid var(--input-border);
-            border-radius: 0;
-            padding: 8px 0;
-            font-weight: 600;
-        }
-        
-        .option-item input:focus {
-            border-color: var(--input-focus);
-            box-shadow: none;
+            padding: 6px 0;
+            animation: optionIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
+        @keyframes optionIn {
+            from { opacity: 0; transform: translateX(-12px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .option-item input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--glass-border);
+            border-radius: 0;
+            padding: 10px 2px;
+            font-weight: 600;
+        }
+
+        .option-item input:focus { border-color: var(--accent-1); box-shadow: none; }
+
         .delete-btn {
-            color: var(--delete-btn);
+            color: var(--text-faint);
             background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
             padding: 0 10px;
-            transition: color 0.3s;
-        }
-        
-        .delete-btn:hover {
-            color: var(--delete-btn-hover);
+            transition: all 0.25s;
         }
 
-        /* Voting List */
+        .delete-btn:hover { color: #ff5470; transform: scale(1.2) rotate(90deg); }
+
+        /* ============ Voting ============ */
+        .voter-progress {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            margin: 14px 0 4px;
+        }
+
+        .voter-progress .dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: all 0.3s;
+        }
+
+        .voter-progress .dot.done { background: var(--accent-1); opacity: 0.55; }
+        .voter-progress .dot.now {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            transform: scale(1.35);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
         .vote-option {
             display: flex;
             align-items: center;
-            padding: 18px;
-            border: 2px solid #F0F0F0;
+            gap: 14px;
+            padding: 17px 18px;
+            border: 1px solid var(--glass-border);
             margin-bottom: 12px;
-            border-radius: 16px;
+            border-radius: 18px;
             cursor: pointer;
-            transition: all 0.2s;
-            background: #FAFAFA;
-        }
-        
-        .vote-option:hover {
-            border-color: var(--option-hover-border);
-            background: #FDFDF8;
-        }
-        
-        .vote-option.selected {
-            background-color: var(--option-selected-bg);
-            border-color: var(--option-selected-border);
-            color: var(--option-selected-text);
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            background: var(--glass);
+            position: relative;
+            overflow: hidden;
+            animation: optionIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
-        .vote-option input {
-            margin-right: 15px;
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary-color);
+        .vote-option:hover { border-color: var(--accent-2); transform: translateX(4px); }
+
+        .vote-option.selected {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-color: transparent;
+            box-shadow: 0 10px 26px var(--accent-glow);
+            transform: scale(1.02);
         }
-        
-        /* Transition */
-        .huge-icon {
-            font-size: 80px;
-            margin-bottom: 24px;
-            animation: pulse 2s infinite;
+
+        .vote-option input { display: none; }
+
+        .vote-option .check {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--text-faint);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: transparent;
+            transition: all 0.25s;
         }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+        .vote-option.selected .check {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            animation: checkPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes checkPop {
+            0%   { transform: scale(0.4); }
+            70%  { transform: scale(1.25); }
             100% { transform: scale(1); }
         }
 
-        /* Results */
+        .vote-option .opt-text { font-weight: 700; font-size: 16px; }
+        .vote-option .opt-emoji { font-size: 26px; }
+
+        /* Roulette flash during random pick */
+        .vote-option.roulette {
+            border-color: var(--accent-1);
+            background: var(--glass-strong);
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        /* ============ Transition Screen ============ */
+        .transition-box { text-align: center; margin: auto 0; }
+
+        .lock-ring {
+            position: relative;
+            width: 130px; height: 130px;
+            margin: 0 auto 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lock-ring::before, .lock-ring::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid var(--accent-1);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        .lock-ring::after { animation-delay: 1s; }
+
+        @keyframes ringPulse {
+            from { transform: scale(0.75); opacity: 0.9; }
+            to   { transform: scale(1.5); opacity: 0; }
+        }
+
+        .lock-ring .huge-icon {
+            font-size: 64px;
+            animation: lockWiggle 2.4s ease-in-out infinite;
+        }
+
+        @keyframes lockWiggle {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .next-voter-num {
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 30px;
+        }
+
+        /* ============ Results ============ */
+        .winner-banner {
+            text-align: center;
+            padding: 26px 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            box-shadow: 0 16px 40px var(--accent-glow);
+            margin-bottom: 20px;
+            animation: winnerIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        }
+
+        @keyframes winnerIn {
+            from { opacity: 0; transform: scale(0.6); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .winner-banner .crown {
+            font-size: 46px;
+            display: block;
+            animation: crownBob 2s ease-in-out infinite;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
+        }
+
+        @keyframes crownBob {
+            0%, 100% { transform: translateY(0) rotate(-6deg); }
+            50%      { transform: translateY(-8px) rotate(6deg); }
+        }
+
+        .winner-banner .winner-name {
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            font-size: 26px;
+            letter-spacing: 2px;
+            margin-top: 6px;
+        }
+
+        .winner-banner .winner-sub { color: rgba(255,255,255,0.85); font-size: 14px; margin-top: 4px; }
+
         .result-item {
-            background-color: #FFF;
-            border: none;
-            padding: 20px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 16px 18px;
             margin-bottom: 12px;
-            border-radius: 16px;
+            border-radius: 18px;
+            animation: optionIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .result-item .result-head {
             display: flex;
             justify-content: space-between;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             align-items: center;
+            margin-bottom: 10px;
         }
+
+        .result-item .result-name { font-weight: 700; font-size: 16px; }
 
         .result-count {
             font-weight: 800;
-            color: #FFFFFF;
-            background: var(--primary-color);
-            padding: 5px 15px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            padding: 4px 14px;
             border-radius: 20px;
-            font-size: 14px;
-            transition: background 0.5s;
+            font-size: 13px;
+            white-space: nowrap;
         }
 
-        h2 {
-            color: var(--text-main);
-            font-weight: 700;
+        .result-bar-track {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
         }
-        
-        p {
+
+        .result-bar {
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            box-shadow: 0 0 12px var(--accent-glow);
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .result-item.is-winner { border-color: var(--accent-1); box-shadow: 0 0 24px var(--accent-glow); }
+
+        .round-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            animation: optionIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .round-card h3 {
+            margin: 0 0 10px;
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            font-weight: 400;
+            letter-spacing: 1px;
             color: var(--text-secondary);
+            font-size: 15px;
         }
 
-        small {
-            color: #AAA;
-            display: block;
-            margin-top: 5px;
-        }
-        
-        .theme-selector {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+        .duel-row {
             display: flex;
-            gap: 10px;
-            margin: 0;
-            z-index: 20;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            margin: 6px 0;
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 12px;
+            font-size: 14px;
         }
-        
-        .theme-btn {
-            width: 24px;
-            height: 24px;
+
+        .duel-row .duel-tag {
+            font-weight: 800;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .duel-tag.win  { background: rgba(52, 211, 153, 0.2);  color: #34d399; }
+        .duel-tag.lose { background: rgba(255, 84, 112, 0.2);  color: #ff5470; }
+        .duel-tag.draw { background: rgba(250, 204, 21, 0.18); color: #facc15; }
+
+        .score-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin: 6px 0;
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 12px;
+        }
+
+        .score-rank {
+            width: 30px; height: 30px;
             border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.8);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            background: var(--glass-strong);
+            flex-shrink: 0;
         }
-        
-        .theme-btn:hover {
-            transform: scale(1.1);
+
+        .score-row.first .score-rank {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #422006;
+            box-shadow: 0 0 14px rgba(251, 191, 36, 0.5);
         }
-        
-        .theme-btn.active {
-            border-color: #FFFFFF;
-            transform: scale(1.1);
-            box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            pointer-events: none;
+        }
+
+        /* Scrollbar */
+        .content::-webkit-scrollbar { width: 6px; }
+        .content::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 6px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
 <body>
 
+<div class="aurora">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+<div class="stars" id="stars"></div>
+<canvas id="confetti-canvas"></canvas>
+
 <div class="container">
     <div class="header">
         <div class="theme-selector">
-            <button class="theme-btn active" style="background-color: #FF9AA2;" onclick="switchTheme('pink')" title="女生粉"></button>
-            <button class="theme-btn" style="background-color: #29B6F6;" onclick="switchTheme('blue')" title="男生蓝"></button>
-            <button class="theme-btn" style="background-color: #66BB6A;" onclick="switchTheme('green')" title="清新绿"></button>
+            <button class="theme-btn active" style="background: linear-gradient(135deg,#ff6b9d,#c084fc); color:#ff6b9d;" onclick="switchTheme('pink', this)" title="星云粉"></button>
+            <button class="theme-btn" style="background: linear-gradient(135deg,#38bdf8,#818cf8); color:#38bdf8;" onclick="switchTheme('blue', this)" title="极光蓝"></button>
+            <button class="theme-btn" style="background: linear-gradient(135deg,#34d399,#a3e635); color:#34d399;" onclick="switchTheme('green', this)" title="萤火绿"></button>
         </div>
-        小工具
+        <span class="planet">🪐</span>投票星球
     </div>
-    
+
     <div class="content">
-        
+
         <!-- 1. START SCREEN -->
         <div id="start-screen" class="screen active">
-            <h2 style="text-align: center; margin-bottom: 30px;">选择功能模式</h2>
-            
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-                <button class="btn" onclick="goToVotingSetup()" style="font-size: 20px; padding: 20px;">
-                    🗳️ 普通投票
+            <div class="hero-emoji">🗳️</div>
+            <h2 style="text-align: center; margin: 6px 0 4px;">今天，听谁的？</h2>
+            <p style="text-align: center; margin-top: 0; margin-bottom: 30px; font-size: 14px;">聚会选择困难症，交给民主与运气</p>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <button class="mode-card" onclick="goToVotingSetup()">
+                    <span class="mode-emoji">🗳️</span>
+                    <span>
+                        <span class="mode-title">普通投票</span>
+                        <div class="mode-desc">吃饭 / 目的地 / 活动，一人一票见分晓</div>
+                    </span>
                 </button>
-                <button class="btn btn-outline" onclick="goToRpsSetup()" style="font-size: 20px; padding: 20px;">
-                    ✊ 石头剪刀布
+                <button class="mode-card" onclick="goToRpsSetup()">
+                    <span class="mode-emoji">✊</span>
+                    <span>
+                        <span class="mode-title">石头剪刀布</span>
+                        <div class="mode-desc">轮流密选出拳，多轮混战决出天选之人</div>
+                    </span>
                 </button>
             </div>
         </div>
 
         <!-- 2. VOTING SETUP SCREEN -->
         <div id="voting-setup-screen" class="screen">
-            <button class="btn btn-outline" onclick="goToStartScreen()" style="margin-bottom: 20px; width: auto; align-self: flex-start;">
-                ← 返回
-            </button>
+            <button class="btn btn-outline btn-back" onclick="goToStartScreen()">← 返回</button>
 
             <div class="form-group">
                 <label>投票人数</label>
-                <input type="number" id="voter-count" value="3" min="1">
+                <div class="stepper">
+                    <button type="button" onclick="stepInput('voter-count', -1)">−</button>
+                    <input type="number" id="voter-count" value="3" min="1">
+                    <button type="button" onclick="stepInput('voter-count', 1)">＋</button>
+                </div>
             </div>
 
             <div class="form-group">
                 <label>投票模式</label>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="multi-select" style="width: 20px; height: 20px;">
-                    <span>允许每人选多项 (多选)</span>
+                <div class="toggle-row" onclick="toggleMultiSelect()">
+                    <span style="font-size: 15px;">允许每人选多项（多选）</span>
+                    <div class="toggle" id="multi-toggle"></div>
                 </div>
+                <input type="checkbox" id="multi-select" style="display:none;">
             </div>
 
             <div class="form-group">
-                <label>选项列表 (可直接修改):</label>
-                <div id="options-list-container">
-                    <!-- Options inserted here by JS -->
-                </div>
-                <!-- Plus Button -->
-                <button class="btn img-btn-add" onclick="addNewOptionEntry()" style="background-color: transparent; border: 2px dashed #6200ea; color: #6200ea; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 24px; margin-right: 5px; line-height: 1;">+</span> 添加选项
+                <label>选项列表（可直接修改）</label>
+                <div id="options-list-container"></div>
+                <button class="btn img-btn-add" onclick="addNewOptionEntry()">
+                    <span style="font-size: 22px; margin-right: 6px; line-height: 1;">+</span> 添加选项
                 </button>
             </div>
 
-            <button class="btn" onclick="startVoting()">开始投票</button>
+            <button class="btn" onclick="startVoting()">🚀 开始投票</button>
             <button class="btn btn-outline" onclick="resetSetupForm()">清空选项</button>
         </div>
 
         <!-- 3. RPS SETUP SCREEN -->
         <div id="rps-setup-screen" class="screen">
-            <button class="btn btn-outline" onclick="goToStartScreen()" style="margin-bottom: 20px; width: auto; align-self: flex-start;">
-                ← 返回
-            </button>
+            <button class="btn btn-outline btn-back" onclick="goToStartScreen()">← 返回</button>
 
             <div class="form-group">
                 <label>玩家人数</label>
-                <input type="number" id="rps-player-count" value="2" min="2">
+                <div class="stepper">
+                    <button type="button" onclick="stepInput('rps-player-count', -1)">−</button>
+                    <input type="number" id="rps-player-count" value="2" min="2">
+                    <button type="button" onclick="stepInput('rps-player-count', 1)">＋</button>
+                </div>
             </div>
 
             <div class="form-group">
                 <label>石头剪刀布轮数</label>
-                <input type="number" id="rps-rounds" value="1" min="1" max="10">
-                <small>设置为1时为单轮模式，大于1时为多轮模式</small>
+                <div class="stepper">
+                    <button type="button" onclick="stepInput('rps-rounds', -1)">−</button>
+                    <input type="number" id="rps-rounds" value="1" min="1" max="10">
+                    <button type="button" onclick="stepInput('rps-rounds', 1)">＋</button>
+                </div>
+                <small>设置为 1 时为单轮模式，大于 1 时为多轮模式</small>
             </div>
 
-            <button class="btn" onclick="startRPSGame()">开始游戏</button>
+            <button class="btn" onclick="startRPSGame()">🎮 开始游戏</button>
         </div>
 
         <!-- 4. VOTING SCREEN -->
         <div id="voting-screen" class="screen">
-            <button class="btn btn-outline" onclick="goToSetupScreen()" style="margin-bottom: 20px; width: auto; align-self: flex-start;">
-                ← 返回
-            </button>
-            <h2 style="text-align: center; margin-bottom: 5px;">第 <span id="current-voter-num">1</span> 位玩家</h2>
-            <p style="text-align: center; color: #666; margin-top: 0;">共 <span id="total-voters-disp"></span> 人</p>
-            
-            <div id="ballot-box" style="margin-top: 20px;">
-                <!-- Vote options inserted here by JS -->
-            </div>
+            <button class="btn btn-outline btn-back" onclick="goToSetupScreen()">← 返回</button>
+            <h2 style="text-align: center; margin-bottom: 2px;">第 <span id="current-voter-num">1</span> 位玩家</h2>
+            <p style="text-align: center; margin-top: 0; font-size: 14px;">共 <span id="total-voters-disp"></span> 人 · 请秘密选择 🤫</p>
 
-            <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px;">
-                <button class="btn btn-random" onclick="voteRandom()">🎲 帮我随机选一个并提交</button>
+            <div class="voter-progress" id="voter-progress"></div>
+
+            <div id="ballot-box" style="margin-top: 18px;"></div>
+
+            <div style="margin-top: 20px; border-top: 1px dashed var(--glass-border); padding-top: 20px;">
+                <button class="btn btn-random" onclick="voteRandom()">🎲 命运的转盘，随机！</button>
                 <br>
-                <button class="btn" onclick="submitVote()" style="margin-top: 15px;">确认选择</button>
+                <button class="btn" onclick="submitVote()" style="margin-top: 15px;">确认选择 ✓</button>
             </div>
         </div>
 
         <!-- 5. TRANSITION SCREEN (PRIVACY) -->
         <div id="transition-screen" class="screen">
             <div class="transition-box">
-                <div class="huge-icon">🔒</div>
-                <h2>选择已提交</h2>
+                <div class="lock-ring"><div class="huge-icon">🔒</div></div>
+                <h2>选择已密封提交</h2>
                 <p>请将设备交给下一位玩家</p>
-                <p style="color: #6200ea; font-size: 24px; font-weight: bold;">第 <span id="next-voter-num">2</span> 位</p>
-                
-                <button class="btn" onclick="nextVoterReady()" style="margin-top: 40px;">我是下一位，开始选择</button>
+                <p class="next-voter-num">第 <span id="next-voter-num">2</span> 位</p>
+
+                <button class="btn" onclick="nextVoterReady()" style="margin-top: 36px;">我是下一位，开始选择</button>
             </div>
         </div>
 
         <!-- 6. RESULTS SCREEN -->
         <div id="results-screen" class="screen">
-            <button class="btn btn-outline" onclick="goToStartScreen()" style="margin-bottom: 20px; width: auto; align-self: flex-start;">
-                ← 返回
-            </button>
-            <h2 id="results-title">投票结果</h2>
-            <p id="results-subtitle">总票数: <span id="total-votes-count">0</span></p>
-            
-            <div id="results-list">
-                <!-- Results inserted here -->
-            </div>
+            <button class="btn btn-outline btn-back" onclick="goToStartScreen()">← 返回</button>
+            <h2 id="results-title" style="margin-bottom: 2px;">投票结果</h2>
+            <p id="results-subtitle" style="margin-top: 0; font-size: 14px;">总票数: <span id="total-votes-count">0</span></p>
 
-            <button class="btn btn-outline" onclick="restartApp()">重新开始</button>
+            <div id="results-list"></div>
+
+            <button class="btn btn-outline" onclick="restartApp()">🔄 重新开始</button>
         </div>
 
     </div>
 </div>
 
 <script>
-    // --- State ---
+    // ================= State =================
     let appState = {
         totalVoters: 0,
         currentVoter: 1,
-        options: ["选项 A", "选项 B"], // Initial default
+        options: ["选项 A", "选项 B"],
         isMultiSelect: false,
-        gameMode: 'normal', // 'normal' or 'rock-paper-scissors'
+        gameMode: 'normal',
         rpsRounds: 1,
-        votes: {}, // Map option -> count
-        rpsResults: [] // 存储石头剪刀布的结果
+        votes: {},
+        rpsResults: []
     };
 
-    function switchTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        
-        // Update active class on buttons
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if(theme === 'pink' && btn.style.backgroundColor.includes('255, 154, 162')) btn.classList.add('active'); // FF9AA2 is 255, 154, 162
-             // Simple hackish check, better to have ID or data attr, but color check works for now
-            if (theme === 'pink' && btn.onclick.toString().includes('pink')) btn.classList.add('active');
-            if (theme === 'blue' && btn.onclick.toString().includes('blue')) btn.classList.add('active');
-            if (theme === 'green' && btn.onclick.toString().includes('green')) btn.classList.add('active');
-        });
+    const RPS_EMOJI = { '石头': '✊', '剪刀': '✌️', '布': '🖐' };
+    let rouletteBusy = false;
+
+    function vibrate(ms) {
+        if (navigator.vibrate) try { navigator.vibrate(ms); } catch (e) {}
     }
 
-    // 界面导航函数
-    function goToStartScreen() {
-        showScreen('start-screen');
+    // ================= Stars & Confetti =================
+    (function initStars() {
+        const box = document.getElementById('stars');
+        for (let i = 0; i < 40; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.animationDelay = (Math.random() * 3) + 's';
+            s.style.animationDuration = (2 + Math.random() * 3) + 's';
+            const size = 1 + Math.random() * 2.5;
+            s.style.width = s.style.height = size + 'px';
+            box.appendChild(s);
+        }
+    })();
+
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let confettiParticles = [];
+    let confettiRunning = false;
+
+    function resizeConfetti() {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
     }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti(count) {
+        const colors = ['#ff6b9d', '#c084fc', '#38bdf8', '#34d399', '#facc15', '#ffffff'];
+        for (let i = 0; i < count; i++) {
+            confettiParticles.push({
+                x: Math.random() * confettiCanvas.width,
+                y: -20 - Math.random() * confettiCanvas.height * 0.4,
+                w: 6 + Math.random() * 7,
+                h: 8 + Math.random() * 10,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vy: 2 + Math.random() * 3.5,
+                vx: -1.5 + Math.random() * 3,
+                rot: Math.random() * Math.PI * 2,
+                vr: -0.15 + Math.random() * 0.3,
+                shape: Math.random() > 0.5 ? 'rect' : 'circle'
+            });
+        }
+        if (!confettiRunning) {
+            confettiRunning = true;
+            requestAnimationFrame(confettiTick);
+        }
+    }
+
+    function confettiTick() {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiParticles = confettiParticles.filter(p => p.y < confettiCanvas.height + 30);
+        confettiParticles.forEach(p => {
+            p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+            p.vy = Math.min(p.vy + 0.03, 5);
+            confettiCtx.save();
+            confettiCtx.translate(p.x, p.y);
+            confettiCtx.rotate(p.rot);
+            confettiCtx.fillStyle = p.color;
+            if (p.shape === 'rect') confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            else { confettiCtx.beginPath(); confettiCtx.arc(0, 0, p.w / 2, 0, Math.PI * 2); confettiCtx.fill(); }
+            confettiCtx.restore();
+        });
+        if (confettiParticles.length > 0) requestAnimationFrame(confettiTick);
+        else { confettiRunning = false; confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height); }
+    }
+
+    // ================= Theme =================
+    function switchTheme(theme, btn) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        vibrate(8);
+    }
+
+    // ================= Navigation =================
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        document.querySelector('.content').scrollTop = 0;
+    }
+
+    function goToStartScreen() { showScreen('start-screen'); }
 
     function goToVotingSetup() {
         showScreen('voting-setup-screen');
@@ -588,15 +1096,32 @@
     }
 
     function goToSetupScreen() {
-        if (appState.gameMode === 'rock-paper-scissors') {
-            showScreen('rps-setup-screen');
-        } else {
-            showScreen('voting-setup-screen');
-        }
+        showScreen(appState.gameMode === 'rock-paper-scissors' ? 'rps-setup-screen' : 'voting-setup-screen');
     }
 
-    // --- Setup Helper Functions ---
-    
+    // ================= Setup Helpers =================
+    function stepInput(id, delta) {
+        const input = document.getElementById(id);
+        const min = parseInt(input.min) || 1;
+        const max = parseInt(input.max) || 99;
+        let val = (parseInt(input.value) || min) + delta;
+        val = Math.max(min, Math.min(max, val));
+        input.value = val;
+        vibrate(8);
+    }
+
+    function toggleMultiSelect() {
+        const cb = document.getElementById('multi-select');
+        cb.checked = !cb.checked;
+        document.getElementById('multi-toggle').classList.toggle('on', cb.checked);
+        vibrate(10);
+    }
+
+    function escapeHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function renderOptionsList() {
         const container = document.getElementById('options-list-container');
         container.innerHTML = '';
@@ -604,11 +1129,11 @@
             const div = document.createElement('div');
             div.className = 'option-item';
             div.innerHTML = `
-                <span style="margin-right: 8px; font-weight: bold; color: #666;">${index + 1}.</span>
-                <input type="text" 
-                       value="${opt}" 
+                <span style="margin-right: 8px; font-weight: bold; color: var(--text-faint);">${index + 1}.</span>
+                <input type="text"
+                       value="${escapeHtml(opt)}"
                        oninput="updateOption(${index}, this.value)"
-                       style="flex: 1; margin: 0; padding: 8px;"
+                       style="flex: 1; margin: 0;"
                        placeholder="请输入选项名称">
                 <button class="delete-btn" onclick="removeOption(${index})">×</button>
             `;
@@ -616,90 +1141,44 @@
         });
     }
 
-    function updateOption(index, value) {
-        appState.options[index] = value;
-    }
+    function updateOption(index, value) { appState.options[index] = value; }
 
     function addNewOptionEntry() {
-        // Find a unique name like "选项 C", "选项 D"...
-        let nextCharCode = 65 + appState.options.length; // 65 is 'A'
-        let newName = "";
-        
-        // Simple heuristic: if we have A and B, try C. If C exists, just use empty.
-        // Actually, let's just make it empty or a placeholder to encourage typing.
-        // User requested: "add option box... plus sign". 
-        // Let's add an empty one or "选项 X" so they see it.
-        
-        newName = "选项 " + String.fromCharCode(nextCharCode);
-        // If it's way past Z, just "选项 N"
-        if (nextCharCode > 90) newName = "新选项";
-
+        let nextCharCode = 65 + appState.options.length;
+        let newName = nextCharCode > 90 ? "新选项" : "选项 " + String.fromCharCode(nextCharCode);
         appState.options.push(newName);
         renderOptionsList();
+        vibrate(10);
+        const inputs = document.querySelectorAll('#options-list-container input');
+        if (inputs.length) inputs[inputs.length - 1].focus();
     }
 
     function removeOption(index) {
-        if (appState.options.length <= 2) {
-            alert('至少需要保留两个选项');
-            return;
-        }
+        if (appState.options.length <= 2) { alert('至少需要保留两个选项'); return; }
         appState.options.splice(index, 1);
         renderOptionsList();
+        vibrate(10);
     }
 
     function resetSetupForm() {
         if (!confirm('确定要清空当前设置吗？这将恢复默认状态。')) return;
-        
-        // Reset inputs
         document.getElementById('voter-count').value = "3";
         document.getElementById('multi-select').checked = false;
-        
-        // Reset options to default
+        document.getElementById('multi-toggle').classList.remove('on');
         appState.options = ["选项 A", "选项 B"];
         renderOptionsList();
     }
 
-    // --- State Transitions ---
-
-    function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    }
-
+    // ================= Game Start =================
     function startVoting() {
-        // Validate Voter Count
-        const countInput = document.getElementById('voter-count');
-        const count = parseInt(countInput.value);
-        
-        if (!count || count < 1) {
-            alert('请输入有效的投票人数');
-            return;
-        }
-        
-        // 普通模式
-        // Validate options
-        // 1. Trim whitespaces
+        const count = parseInt(document.getElementById('voter-count').value);
+        if (!count || count < 1) { alert('请输入有效的投票人数'); return; }
+
         appState.options = appState.options.map(o => o.trim());
-        
-        // 2. Check empty
-        if (appState.options.some(o => o === "")) {
-            alert('存在空白的选项名称，请修改或删除');
-            return;
-        }
+        if (appState.options.some(o => o === "")) { alert('存在空白的选项名称，请修改或删除'); return; }
+        if (appState.options.length < 2) { alert('至少添加两个选项'); return; }
+        if (new Set(appState.options).size !== appState.options.length) { alert('选项名称不能重复，请修改重复的选项名称'); return; }
 
-        if (appState.options.length < 2) {
-            alert('至少添加两个选项');
-            return;
-        }
-        
-        // 3. Check duplicates
-        const uniqueSet = new Set(appState.options);
-        if (uniqueSet.size !== appState.options.length) {
-            alert('选项名称不能重复，请修改重复的选项名称');
-            return;
-        }
-
-        // Initialize State
         appState.totalVoters = count;
         appState.currentVoter = 1;
         appState.isMultiSelect = document.getElementById('multi-select').checked;
@@ -711,25 +1190,12 @@
     }
 
     function startRPSGame() {
-        // Validate Player Count
-        const countInput = document.getElementById('rps-player-count');
-        const count = parseInt(countInput.value);
-        
-        if (!count || count < 2) {
-            alert('请输入有效的玩家人数（至少2人）');
-            return;
-        }
-        
-        // 石头剪刀布模式
-        const roundsInput = document.getElementById('rps-rounds');
-        const rounds = parseInt(roundsInput.value);
-        
-        if (!rounds || rounds < 1 || rounds > 10) {
-            alert('请输入有效的轮数（1-10）');
-            return;
-        }
-        
-        // Initialize State
+        const count = parseInt(document.getElementById('rps-player-count').value);
+        if (!count || count < 2) { alert('请输入有效的玩家人数（至少2人）'); return; }
+
+        const rounds = parseInt(document.getElementById('rps-rounds').value);
+        if (!rounds || rounds < 1 || rounds > 10) { alert('请输入有效的轮数（1-10）'); return; }
+
         appState.totalVoters = count;
         appState.currentVoter = 1;
         appState.rpsRounds = rounds;
@@ -741,201 +1207,180 @@
         loadVotingScreen();
     }
 
+    // ================= Voting Screen =================
+    function renderVoterProgress() {
+        const box = document.getElementById('voter-progress');
+        box.innerHTML = '';
+        for (let i = 1; i <= appState.totalVoters; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (i < appState.currentVoter ? ' done' : i === appState.currentVoter ? ' now' : '');
+            box.appendChild(dot);
+        }
+    }
+
+    function buildVoteOption(opt, type, name, stagger) {
+        const label = document.createElement('label');
+        label.className = 'vote-option';
+        label.style.animationDelay = (stagger * 0.06) + 's';
+        const emoji = RPS_EMOJI[opt] ? `<span class="opt-emoji">${RPS_EMOJI[opt]}</span>` : '';
+        label.innerHTML = `
+            <input type="${type}" name="${name}" value="${escapeHtml(opt)}">
+            <span class="check">✓</span>
+            ${emoji}
+            <span class="opt-text">${escapeHtml(opt)}</span>
+        `;
+        label.onclick = (e) => {
+            e.preventDefault(); // 阻止 label 默认激活，避免与手动切换叠加
+            if (rouletteBusy) return;
+            const input = label.querySelector('input');
+            if (type === 'radio') input.checked = true;
+            else input.checked = !input.checked;
+            updateSelectionUI();
+            vibrate(12);
+        };
+        return label;
+    }
+
     function loadVotingScreen() {
         showScreen('voting-screen');
         document.getElementById('current-voter-num').textContent = appState.currentVoter;
         document.getElementById('total-voters-disp').textContent = appState.totalVoters;
+        renderVoterProgress();
 
         const container = document.getElementById('ballot-box');
         container.innerHTML = '';
 
         if (appState.gameMode === 'rock-paper-scissors' && appState.rpsRounds > 1) {
-            // 石头剪刀布多轮模式
-            container.innerHTML = `<h3 style="text-align: center; margin-bottom: 20px;">请为每一轮选择</h3>`;
-            
+            // 多轮模式
             for (let round = 1; round <= appState.rpsRounds; round++) {
                 const roundDiv = document.createElement('div');
-                roundDiv.style.marginBottom = '20px';
-                roundDiv.innerHTML = `<h4 style="margin-bottom: 10px;">第 ${round} 轮</h4>`;
-                
-                appState.options.forEach(opt => {
-                    const label = document.createElement('label');
-                    label.className = 'vote-option';
-                    label.innerHTML = `
-                        <input type="radio" name="rps-round-${round}" value="${opt}">
-                        <span class="opt-text">${opt}</span>
-                    `;
-                    
-                    // Interaction: select row checks input
-                    label.onclick = (e) => {
-                        // Prevent double trigger if clicking directly on input
-                        if(e.target.tagName !== 'INPUT') {
-                           const input = label.querySelector('input');
-                           input.checked = true;
-                           updateSelectionUI();
-                        } else {
-                            updateSelectionUI();
-                        }
-                    };
-                    
-                    roundDiv.appendChild(label);
+                roundDiv.style.marginBottom = '18px';
+                roundDiv.innerHTML = `<h4 style="margin: 0 0 10px; font-family:'ZCOOL KuaiLe',sans-serif; font-weight:400; letter-spacing:1px; color: var(--text-secondary);">— 第 ${round} 轮 —</h4>`;
+                appState.options.forEach((opt, i) => {
+                    roundDiv.appendChild(buildVoteOption(opt, 'radio', 'rps-round-' + round, (round - 1) * 3 + i));
                 });
-                
                 container.appendChild(roundDiv);
             }
         } else {
-            // 普通模式或石头剪刀布单轮模式
-            appState.options.forEach(opt => {
-                const type = appState.isMultiSelect ? 'checkbox' : 'radio';
-                const name = appState.isMultiSelect ? 'vote-opt' : 'vote-opt-radio';
-                
-                const label = document.createElement('label');
-                label.className = 'vote-option';
-                label.innerHTML = `
-                    <input type="${type}" name="${name}" value="${opt}">
-                    <span class="opt-text">${opt}</span>
-                `;
-                
-                // Interaction: select row checks input
-                label.onclick = (e) => {
-                    // Prevent double trigger if clicking directly on input
-                    if(e.target.tagName !== 'INPUT') {
-                       const input = label.querySelector('input');
-                       if (type === 'radio') {
-                           input.checked = true;
-                       } else {
-                           input.checked = !input.checked;
-                       }
-                       updateSelectionUI();
-                    } else {
-                        updateSelectionUI();
-                    }
-                };
-                
-                container.appendChild(label);
+            const type = appState.isMultiSelect ? 'checkbox' : 'radio';
+            const name = appState.isMultiSelect ? 'vote-opt' : 'vote-opt-radio';
+            appState.options.forEach((opt, i) => {
+                container.appendChild(buildVoteOption(opt, type, name, i));
             });
         }
     }
 
     function updateSelectionUI() {
-        // Just visual styling
         document.querySelectorAll('.vote-option').forEach(el => {
             const input = el.querySelector('input');
-            if (input.checked) el.classList.add('selected');
-            else el.classList.remove('selected');
+            el.classList.toggle('selected', input.checked);
         });
     }
 
+    // ================= Random Vote (Roulette) =================
     function voteRandom() {
-        if (!confirm('确定要随机投票并直接提交吗？')) return;
+        if (rouletteBusy) return;
 
-        if (appState.gameMode === 'rock-paper-scissors' && appState.rpsRounds > 1) {
-            // 石头剪刀布多轮模式随机选择
-            const selections = [];
-            for (let round = 1; round <= appState.rpsRounds; round++) {
-                const randomIndex = Math.floor(Math.random() * appState.options.length);
-                selections.push(appState.options[randomIndex]);
+        const multiRound = appState.gameMode === 'rock-paper-scissors' && appState.rpsRounds > 1;
+        rouletteBusy = true;
+        vibrate(20);
+
+        const doCommit = () => {
+            rouletteBusy = false;
+            if (multiRound) {
+                const selections = [];
+                for (let round = 1; round <= appState.rpsRounds; round++) {
+                    selections.push(appState.options[Math.floor(Math.random() * appState.options.length)]);
+                }
+                appState.rpsResults.push({ voter: appState.currentVoter, selections: selections });
+            } else {
+                const randomOption = appState.options[Math.floor(Math.random() * appState.options.length)];
+                appState.votes[randomOption]++;
+                if (appState.gameMode === 'rock-paper-scissors') {
+                    appState.rpsResults.push({ voter: appState.currentVoter, selections: [randomOption] });
+                }
             }
-            
-            // 存储多轮选择
-            appState.rpsResults.push({
-                voter: appState.currentVoter,
-                selections: selections
-            });
-        } else {
-            // 普通模式或石头剪刀布单轮模式随机选择
-            const randomIndex = Math.floor(Math.random() * appState.options.length);
-            const randomOption = appState.options[randomIndex];
-            
-            // Record vote
-            appState.votes[randomOption]++;
-            
-            // 石头剪刀布单轮模式存储结果
-            if (appState.gameMode === 'rock-paper-scissors') {
-                appState.rpsResults.push({
-                    voter: appState.currentVoter,
-                    selections: [randomOption]
-                });
+            finishVoterTurn();
+        };
+
+        if (multiRound) { doCommit(); return; }
+
+        // 轮盘动画：快速闪烁各选项后停在随机项
+        const rows = Array.from(document.querySelectorAll('#ballot-box .vote-option'));
+        if (!rows.length) { doCommit(); return; }
+
+        const targetIndex = Math.floor(Math.random() * rows.length);
+        let ticks = 0;
+        const totalTicks = 14 + targetIndex;
+        const spin = () => {
+            rows.forEach(r => r.classList.remove('roulette', 'selected'));
+            const idx = ticks % rows.length;
+            rows[idx].classList.add('roulette');
+            vibrate(6);
+            ticks++;
+            if (ticks <= totalTicks) {
+                const delay = 60 + Math.pow(ticks / totalTicks, 2) * 220;
+                setTimeout(spin, delay);
+            } else {
+                rows.forEach(r => r.classList.remove('roulette'));
+                const input = rows[targetIndex].querySelector('input');
+                input.checked = true;
+                updateSelectionUI();
+                vibrate(40);
+                setTimeout(doCommit, 600);
             }
-        }
-        
-        finishVoterTurn();
+        };
+        spin();
     }
 
+    // ================= Submit =================
     function submitVote() {
+        if (rouletteBusy) return;
+
         if (appState.gameMode === 'rock-paper-scissors' && appState.rpsRounds > 1) {
-            // 石头剪刀布多轮模式
             const selections = [];
             for (let round = 1; round <= appState.rpsRounds; round++) {
                 const input = document.querySelector(`input[name="rps-round-${round}"]:checked`);
-                if (!input) {
-                    alert(`请为第 ${round} 轮选择一个选项`);
-                    return;
-                }
+                if (!input) { alert(`请为第 ${round} 轮选择一个选项`); return; }
                 selections.push(input.value);
             }
-            
-            // 存储多轮选择
-            appState.rpsResults.push({
-                voter: appState.currentVoter,
-                selections: selections
-            });
+            appState.rpsResults.push({ voter: appState.currentVoter, selections: selections });
         } else {
-            // 普通模式或石头剪刀布单轮模式
             const inputs = document.querySelectorAll('#ballot-box input');
             let selected = [];
-            inputs.forEach(input => {
-                if (input.checked) selected.push(input.value);
-            });
+            inputs.forEach(input => { if (input.checked) selected.push(input.value); });
 
-            if (selected.length === 0) {
-                alert('请至少选择一项，或者点击随机投票');
-                return;
-            }
+            if (selected.length === 0) { alert('请至少选择一项，或者点击随机投票'); return; }
 
-            // Record votes
-            selected.forEach(opt => {
-                appState.votes[opt]++;
-            });
-            
-            // 石头剪刀布单轮模式存储结果
+            selected.forEach(opt => { appState.votes[opt]++; });
+
             if (appState.gameMode === 'rock-paper-scissors') {
-                appState.rpsResults.push({
-                    voter: appState.currentVoter,
-                    selections: selected
-                });
+                appState.rpsResults.push({ voter: appState.currentVoter, selections: selected });
             }
         }
 
+        vibrate(30);
         finishVoterTurn();
     }
 
     function finishVoterTurn() {
         if (appState.currentVoter < appState.totalVoters) {
-            // Prepare next pass
             appState.currentVoter++;
             document.getElementById('next-voter-num').textContent = appState.currentVoter;
             showScreen('transition-screen');
         } else {
-            // All done
             showResults();
         }
     }
 
-    function nextVoterReady() {
-        loadVotingScreen();
-    }
+    function nextVoterReady() { loadVotingScreen(); }
 
-    // 判断石头剪刀布胜负
+    // ================= Results =================
     function getRPSResult(player1, player2) {
         if (player1 === player2) return '平局';
-        if (
-            (player1 === '石头' && player2 === '剪刀') ||
+        if ((player1 === '石头' && player2 === '剪刀') ||
             (player1 === '剪刀' && player2 === '布') ||
-            (player1 === '布' && player2 === '石头')
-        ) {
-            return '胜利';
-        }
+            (player1 === '布' && player2 === '石头')) return '胜利';
         return '失败';
     }
 
@@ -945,149 +1390,153 @@
         const resultsTitle = document.getElementById('results-title');
         const resultsSubtitle = document.getElementById('results-subtitle');
         list.innerHTML = '';
-        
+
         if (appState.gameMode === 'rock-paper-scissors') {
-            // 石头剪刀布模式结果
-            resultsTitle.textContent = '游戏结果';
-            resultsSubtitle.style.display = 'none';
-            
-            if (appState.rpsResults.length < 2) {
-                list.innerHTML = '<p style="text-align: center; color: #666;">需要至少两名玩家才能进行石头剪刀布游戏</p>';
-                return;
-            }
-            
-            // 计算每一轮的结果
-            const roundResults = [];
-            const playerScores = {};
-            
-            // 初始化玩家分数
-            appState.rpsResults.forEach(result => {
-                playerScores[result.voter] = 0;
-            });
-            
-            // 计算每一轮的胜负
-            for (let round = 0; round < appState.rpsRounds; round++) {
-                const roundData = { round: round + 1, outcomes: [] };
-                
-                // 两两比较
-                for (let i = 0; i < appState.rpsResults.length; i++) {
-                    for (let j = i + 1; j < appState.rpsResults.length; j++) {
-                        const player1 = appState.rpsResults[i];
-                        const player2 = appState.rpsResults[j];
-                        const result = getRPSResult(player1.selections[round], player2.selections[round]);
-                        
-                        roundData.outcomes.push({
-                            player1: player1.voter,
-                            choice1: player1.selections[round],
-                            player2: player2.voter,
-                            choice2: player2.selections[round],
-                            result: result
-                        });
-                        
-                        // 更新分数
-                        if (result === '胜利') {
-                            playerScores[player1.voter]++;
-                        } else if (result === '失败') {
-                            playerScores[player2.voter]++;
-                        }
-                    }
-                }
-                
-                roundResults.push(roundData);
-            }
-            
-            // 显示每一轮的结果
-            roundResults.forEach(roundData => {
-                const roundDiv = document.createElement('div');
-                roundDiv.className = 'result-item';
-                roundDiv.innerHTML = `<h3>第 ${roundData.round} 轮</h3>`;
-                list.appendChild(roundDiv);
-                
-                roundData.outcomes.forEach(outcome => {
-                    const outcomeDiv = document.createElement('div');
-                    outcomeDiv.style.padding = '10px';
-                    outcomeDiv.style.margin = '5px 0';
-                    outcomeDiv.style.backgroundColor = '#f9f9f9';
-                    outcomeDiv.style.borderRadius = '8px';
-                    outcomeDiv.innerHTML = `
-                        玩家 ${outcome.player1} (${outcome.choice1}) vs 玩家 ${outcome.player2} (${outcome.choice2})<br>
-                        <strong style="color: ${outcome.result === '胜利' ? '#4CAF50' : outcome.result === '失败' ? '#F44336' : '#FFC107'}">
-                            ${outcome.result}
-                        </strong>
-                    `;
-                    list.appendChild(outcomeDiv);
-                });
-            });
-            
-            // 显示总得分
-            const scoreDiv = document.createElement('div');
-            scoreDiv.className = 'result-item';
-            scoreDiv.innerHTML = `<h3>总得分</h3>`;
-            list.appendChild(scoreDiv);
-            
-            // 排序玩家分数
-            const sortedScores = Object.entries(playerScores).sort((a, b) => b[1] - a[1]);
-            
-            sortedScores.forEach(([player, score]) => {
-                const scoreItem = document.createElement('div');
-                scoreItem.style.padding = '10px';
-                scoreItem.style.margin = '5px 0';
-                scoreItem.style.backgroundColor = '#f9f9f9';
-                scoreItem.style.borderRadius = '8px';
-                scoreItem.innerHTML = `
-                    玩家 ${player}: <strong>${score}</strong> 分
-                `;
-                list.appendChild(scoreItem);
-            });
-            
-            // 显示最终结果
-            const finalDiv = document.createElement('div');
-            finalDiv.className = 'result-item';
-            finalDiv.style.backgroundColor = '#E3F2FD';
-            finalDiv.innerHTML = `<h3>最终结果</h3>`;
-            list.appendChild(finalDiv);
-            
-            const winner = sortedScores[0];
-            const finalResult = document.createElement('div');
-            finalResult.style.padding = '15px';
-            finalResult.style.margin = '10px 0';
-            finalResult.style.backgroundColor = '#2196F3';
-            finalResult.style.color = 'white';
-            finalResult.style.borderRadius = '8px';
-            finalResult.style.textAlign = 'center';
-            finalResult.innerHTML = `
-                <h4>胜利者</h4>
-                <p>玩家 ${winner[0]}</p>
-                <p>得分: ${winner[1]}</p>
-            `;
-            list.appendChild(finalResult);
+            renderRPSResults(list, resultsTitle, resultsSubtitle);
         } else {
-            // 普通模式结果
-            resultsTitle.textContent = '投票结果';
-            resultsSubtitle.style.display = 'block';
-            
-            let totalVotes = 0;
-            
-            // Sort results: most votes first
-            const sorted = Object.entries(appState.votes).sort((a,b) => b[1] - a[1]);
-
-            sorted.forEach(([opt, count]) => {
-                totalVotes += count;
-                const div = document.createElement('div');
-                div.className = 'result-item';
-                div.innerHTML = `
-                    <span>${opt}</span>
-                    <span class="result-count">${count} 票</span>
-                `;
-                list.appendChild(div);
-            });
-
-            document.getElementById('total-votes-count').textContent = totalVotes;
+            renderVoteResults(list, resultsTitle, resultsSubtitle);
         }
+
+        launchConfetti(160);
+        vibrate([60, 40, 60]);
+    }
+
+    function renderVoteResults(list, resultsTitle, resultsSubtitle) {
+        resultsTitle.textContent = '投票结果';
+        resultsSubtitle.style.display = 'block';
+
+        const sorted = Object.entries(appState.votes).sort((a, b) => b[1] - a[1]);
+        let totalVotes = 0;
+        sorted.forEach(([, count]) => totalVotes += count);
+
+        const topCount = sorted.length ? sorted[0][1] : 0;
+        const winners = sorted.filter(([, c]) => c === topCount && c > 0);
+
+        // Winner banner
+        if (winners.length > 0) {
+            const banner = document.createElement('div');
+            banner.className = 'winner-banner';
+            banner.innerHTML = `
+                <span class="crown">👑</span>
+                <div class="winner-name">${winners.map(([o]) => escapeHtml(o)).join(' & ')}</div>
+                <div class="winner-sub">${winners.length > 1 ? '平票冠军' : '全场最佳'} · ${topCount} 票</div>
+            `;
+            list.appendChild(banner);
+        }
+
+        sorted.forEach(([opt, count], i) => {
+            const pct = totalVotes > 0 ? Math.round(count / totalVotes * 100) : 0;
+            const div = document.createElement('div');
+            div.className = 'result-item' + (count === topCount && count > 0 ? ' is-winner' : '');
+            div.style.animationDelay = (0.15 + i * 0.08) + 's';
+            div.innerHTML = `
+                <div class="result-head">
+                    <span class="result-name">${escapeHtml(opt)}</span>
+                    <span class="result-count">${count} 票 · ${pct}%</span>
+                </div>
+                <div class="result-bar-track"><div class="result-bar" data-pct="${pct}"></div></div>
+            `;
+            list.appendChild(div);
+        });
+
+        document.getElementById('total-votes-count').textContent = totalVotes;
+
+        // Animate bars after render
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                list.querySelectorAll('.result-bar').forEach(bar => {
+                    bar.style.width = bar.dataset.pct + '%';
+                });
+            }, 250);
+        });
+    }
+
+    function renderRPSResults(list, resultsTitle, resultsSubtitle) {
+        resultsTitle.textContent = '游戏结果';
+        resultsSubtitle.style.display = 'none';
+
+        if (appState.rpsResults.length < 2) {
+            list.innerHTML = '<p style="text-align: center;">需要至少两名玩家才能进行石头剪刀布游戏</p>';
+            return;
+        }
+
+        const playerScores = {};
+        appState.rpsResults.forEach(r => playerScores[r.voter] = 0);
+
+        const roundResults = [];
+        for (let round = 0; round < appState.rpsRounds; round++) {
+            const roundData = { round: round + 1, outcomes: [] };
+            for (let i = 0; i < appState.rpsResults.length; i++) {
+                for (let j = i + 1; j < appState.rpsResults.length; j++) {
+                    const p1 = appState.rpsResults[i];
+                    const p2 = appState.rpsResults[j];
+                    const result = getRPSResult(p1.selections[round], p2.selections[round]);
+                    roundData.outcomes.push({
+                        player1: p1.voter, choice1: p1.selections[round],
+                        player2: p2.voter, choice2: p2.selections[round],
+                        result: result
+                    });
+                    if (result === '胜利') playerScores[p1.voter]++;
+                    else if (result === '失败') playerScores[p2.voter]++;
+                }
+            }
+            roundResults.push(roundData);
+        }
+
+        // 胜者横幅
+        const sortedScores = Object.entries(playerScores).sort((a, b) => b[1] - a[1]);
+        const topScore = sortedScores[0][1];
+        const winners = sortedScores.filter(([, s]) => s === topScore);
+
+        const banner = document.createElement('div');
+        banner.className = 'winner-banner';
+        banner.innerHTML = `
+            <span class="crown">🏆</span>
+            <div class="winner-name">${winners.map(([p]) => '玩家 ' + p).join(' & ')}</div>
+            <div class="winner-sub">${winners.length > 1 ? '并列冠军' : '最终胜利者'} · ${topScore} 分</div>
+        `;
+        list.appendChild(banner);
+
+        // 每轮对战
+        roundResults.forEach((roundData, ri) => {
+            const card = document.createElement('div');
+            card.className = 'round-card';
+            card.style.animationDelay = (0.15 + ri * 0.08) + 's';
+            card.innerHTML = `<h3>🥊 第 ${roundData.round} 轮</h3>`;
+            roundData.outcomes.forEach(o => {
+                const row = document.createElement('div');
+                row.className = 'duel-row';
+                const tagClass = o.result === '胜利' ? 'win' : o.result === '失败' ? 'lose' : 'draw';
+                const tagText = o.result === '胜利' ? `玩家${o.player1} 胜` : o.result === '失败' ? `玩家${o.player2} 胜` : '平局';
+                row.innerHTML = `
+                    <span>玩家${o.player1} ${RPS_EMOJI[o.choice1] || ''} <span style="color:var(--text-faint)">vs</span> ${RPS_EMOJI[o.choice2] || ''} 玩家${o.player2}</span>
+                    <span class="duel-tag ${tagClass}">${tagText}</span>
+                `;
+                card.appendChild(row);
+            });
+            list.appendChild(card);
+        });
+
+        // 积分榜
+        const scoreCard = document.createElement('div');
+        scoreCard.className = 'round-card';
+        scoreCard.style.animationDelay = (0.15 + roundResults.length * 0.08) + 's';
+        scoreCard.innerHTML = `<h3>📊 积分榜</h3>`;
+        sortedScores.forEach(([player, score], rank) => {
+            const row = document.createElement('div');
+            row.className = 'score-row' + (rank === 0 ? ' first' : '');
+            row.innerHTML = `
+                <span class="score-rank">${rank + 1}</span>
+                <span style="flex:1;">玩家 ${player}</span>
+                <strong style="font-size:17px;">${score} 分</strong>
+            `;
+            scoreCard.appendChild(row);
+        });
+        list.appendChild(scoreCard);
     }
 
     function restartApp() {
-        if(confirm('确定要清空数据并重新开始吗？')) {
+        if (confirm('确定要清空数据并重新开始吗？')) {
             appState.currentVoter = 1;
             appState.votes = {};
             appState.rpsResults = [];
@@ -1095,9 +1544,8 @@
         }
     }
 
-    // Init
+    // ================= Init =================
     renderOptionsList();
-
 </script>
 
 </body>
